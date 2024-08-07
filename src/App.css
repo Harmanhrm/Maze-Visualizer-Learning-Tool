@@ -1,38 +1,110 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.controls > div,
+.controls > button {
+  margin: 0 10px;
+}
+
+.row-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 50px;
+  width: 100%; /* Full width to accommodate both containers */
+  justify-content: space-between; /* Distribute space between items */
+}
+
+.visualization-container {
+  width: 27vw; /* Adjust width as needed */
+  height: 27vw; /* Adjust based on preference */
+  border: 1px solid black;
+  overflow: hidden; /* Prevent scrolling */
+  margin-left: 150px;
+}
+
+.visualization {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+.grid {
+  display: grid;
+  gap: 0; /* No gaps between cells */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cell {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.wall {
+  border: 1px solid black;
+}
+
+.no-wall {
+  border: none;
+}
+
+.cell.path {
+  background-color: white;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align steps to the start of the container */
+  width: 50%; /* Adjust width as needed */
+  height: 100%; /* Align height with the maze container */
+  margin-right: 20px;
+  padding-left: 10px; /* Ensure padding aligns the container properly */
+}
+
+.steps-top-row {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px; /* Space below the top row */
+}
+
+.step {
+  display: flex;
+
+  padding: 5px; /* Add padding to align text better */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.step.highlighted {
+  background-color: #f0f8ff;
+  font-weight: bold;
+}
+
+.indented {
+  padding-left: 20px; /* Adjust indentation level */
+}
+
+.indented.deeper {
+  padding-left: 40px; /* Increase indentation level for deeper steps */
+}
+
+.indented.deepest {
+  padding-left: 60px; /* Increase indentation level for the deepest steps */
 }
