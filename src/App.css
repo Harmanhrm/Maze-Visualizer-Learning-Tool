@@ -70,8 +70,7 @@
 
 .steps-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align steps to the start of the container */
+  flex-direction: row; /* Arrange top row and list horizontally */
   width: 50%; /* Adjust width as needed */
   height: 100%; /* Align height with the maze container */
   margin-right: 20px;
@@ -80,13 +79,20 @@
 
 .steps-top-row {
   display: flex;
-  flex-direction: row;
-  margin-bottom: 10px; /* Space below the top row */
+  flex-direction: column;
+  margin-bottom: 150px;
+  background-color: rgb(237, 54, 22);
+  margin-right: 20px; /* Space between top row and steps list */
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(237, 115, 22);
+  width: 100%; /* Ensure it takes the remaining space */
 }
 
 .step {
-  display: flex;
-
   padding: 5px; /* Add padding to align text better */
   width: 100%;
   box-sizing: border-box;
@@ -97,6 +103,7 @@
   font-weight: bold;
 }
 
+/* Indentation classes */
 .indented {
   padding-left: 20px; /* Adjust indentation level */
 }
@@ -107,4 +114,25 @@
 
 .indented.deepest {
   padding-left: 60px; /* Increase indentation level for the deepest steps */
+}
+
+/* Alignment classes */
+.left-align {
+  text-align: left; /* Align text to the left */
+}
+
+.right-align {
+  text-align: left; /* Align text to the right */
+  margin-left: auto; /* Push this section to the right */
+}
+
+
+.path-current {
+  background-color: green; /* Color for current path */
+}
+
+.animation-speed-container {
+  margin-top: 20px;
+  margin-right: 600px;
+  text-align: center;
 }
