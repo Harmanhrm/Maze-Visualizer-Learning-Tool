@@ -3,35 +3,62 @@ import './App.css';
 
 function App() {
   const [mazeSize, setMazeSize] = useState(20);
+  const [tempMazeSize, setTempMazeSize] = useState(20); // Used for slider control
   const [algorithm, setAlgorithm] = useState('recursive');
   const [visualization, setVisualization] = useState({ maze: [], currentPath: [] });
   const [steps, setSteps] = useState([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showSteps, setShowSteps] = useState(false); // Checkbox state
   const [animationSpeed, setAnimationSpeed] = useState(100); // Default speed (milliseconds)
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [stepDirection, setStepDirection] = useState(1); // 1 for forward, -1 for backward
+  const [currentPosition, setCurrentPosition] = useState(null); // State to hold the current position
 
   useEffect(() => {
     let timeoutId;
+    let tempSteps = [...steps]; // Temporary storage for steps
+    let tempIndex = currentStepIndex; // Temporary storage for the current step index
+  
+    const updateStep = () => {
+      setCurrentStepIndex(prevIndex => {
+        if (prevIndex >= tempSteps.length - 1 || prevIndex < 0) {
+          clearTimeout(timeoutId);
+          setIsGenerating(false);
+          return prevIndex;
+        }
+        // Move to the next step only if not paused
+        if (!isPaused) {
+          timeoutId = setTimeout(updateStep, animationSpeed);
+        }
+        return prevIndex + stepDirection;
+      });
+    };
+  
     if (steps.length > 0 && showSteps) {
-      const updateStep = () => {
-        setCurrentStepIndex(prevIndex => {
-          if (prevIndex >= steps.length - 1) {
-            clearTimeout(timeoutId); // Stop animation when steps are complete
-            return prevIndex;
-          }
-          timeoutId = setTimeout(updateStep, animationSpeed); // Use animationSpeed for delay
-          return prevIndex + 1;
-        });
-      };
-      timeoutId = setTimeout(updateStep, animationSpeed); // Start the animation
+      if (isPlaying && !isPaused) {
+        setIsGenerating(true);
+        tempSteps = [...steps]; // Update tempSteps when playing
+        tempIndex = currentStepIndex; // Update tempIndex when playing
+        timeoutId = setTimeout(updateStep, animationSpeed); // Start the animation
+      } else if (isPaused || !isPlaying) {
+        clearTimeout(timeoutId); // Cleanup timeout if paused or not playing
+        setIsGenerating(false);
+        // Restore the last state if paused
+        setSteps(tempSteps);
+        setCurrentStepIndex(tempIndex);
+      }
     } else {
-      clearTimeout(timeoutId); // Cleanup on stop
+      setIsGenerating(false);
+      clearTimeout(timeoutId); // Cleanup on stop or empty steps
     }
   
-    console.log('Current Animation Speed:', animationSpeed); // Debugging line
+    // Cleanup timeout on component unmount or when dependencies change
+    return () => clearTimeout(timeoutId);
+  }, [steps, showSteps, animationSpeed, isPlaying, isPaused, stepDirection, currentStepIndex]);
   
-    return () => clearTimeout(timeoutId); // Cleanup on component unmount
-  }, [steps, showSteps, animationSpeed]); // Add animationSpeed to dependencies
+  
   
   useEffect(() => {
     if (steps.length > 0 && showSteps) {
@@ -40,29 +67,60 @@ function App() {
   }, [currentStepIndex, steps, showSteps]);
 
   const handleGenerateMaze = async () => {
-    console.log(`Generating maze with size: ${mazeSize} and algorithm: ${algorithm}`);
+    setMazeSize(tempMazeSize);
+    setIsPaused(false);
+    setIsPlaying(true);
     
+    console.log(`Generating maze with size: ${tempMazeSize} and algorithm: ${algorithm}`);
+  
     try {
-      const response = await fetch(`http://127.0.0.1:5000/generate_maze?size=${mazeSize}`);
+      const response = await fetch(`http://127.0.0.1:5000/generate_maze?size=${tempMazeSize}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      
+  
       const { maze, steps } = await response.json();
-      
+  
       console.log('Maze generated', maze, steps);
-      setVisualization({ maze, currentPath: Array(maze.length).fill(null).map(() => Array(maze[0].length).fill(0)) });
+      setVisualization({
+        maze,
+        currentPath: Array(maze.length).fill(null).map(() => Array(maze[0].length).fill(0)),
+      });
       setSteps(steps);
       setCurrentStepIndex(0); // Reset to the beginning step
+      setIsGenerating(true); // Indicate that generation is ongoing
+      setIsPlaying(false); // Stop automatic playing to allow step-by-step control
     } catch (error) {
       console.error('Error fetching maze:', error);
     }
   };
-
+  
+  
+  const handlePause = () => {
+    setIsPaused(true);
+    setIsPlaying(false);
+  };
+  
+  const handlePlay = () => {
+    setIsPaused(false);
+    setIsPlaying(true);
+  };
+  
+  const handleStepForward = () => {
+    setIsPaused(true);
+    setIsPlaying(false);
+    setCurrentStepIndex((prevIndex) => Math.min(prevIndex + 1, steps.length - 1));
+  };
+  
+  const handleStepBackward = () => {
+    setIsPaused(true);
+    setIsPlaying(false);
+    setCurrentStepIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  };
+  
   const containerSize = Math.min(window.innerWidth, window.innerHeight) * 0.27; // 27% of the smaller viewport dimension
   const cellSize = containerSize / mazeSize; // Calculate cell size based on maze size and container size
   const applyStepsToMaze = () => {
-    // Initialize maze with walls
     let maze = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(1));
     const stack = [];
     let currentPath = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(0));
@@ -73,25 +131,21 @@ function App() {
       const step = steps[i];
       switch (step[0]) {
         case 0:
-          // Reset the maze to walls
           maze = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(1));
           currentPath = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(0));
           break;
         case 1:
-          // Mark the start cell as a path
           const [startX, startY] = step[2];
           maze[2 * startX + 1][2 * startY + 1] = 0;
           currentPath[2 * startX + 1][2 * startY + 1] = 2;
           previousPosition = [startX, startY];
           break;
         case 9:
-          // Update maze and path based on current position
           const [nx, ny] = step[2];
           maze[2 * nx + 1][2 * ny + 1] = 0;
           currentPath[2 * nx + 1][2 * ny + 1] = 2;
           if (previousPosition) {
             const [px, py] = previousPosition;
-            // Mark the path between previous and current cells
             const dx = nx - px;
             const dy = ny - py;
             maze[2 * px + 1 + dx][2 * py + 1 + dy] = 0;
@@ -100,39 +154,42 @@ function App() {
           previousPosition = [nx, ny];
           break;
         case 10:
-          // Push current position onto stack
           stack.push(step[2]);
           break;
         case 11:
-          // Pop from stack and update previous position
           const poppedPosition = stack.pop();
           if (poppedPosition) {
-          if (stack.length > 0) {
-            previousPosition = stack[stack.length - 1];
-          } else {
-            previousPosition = null;
+            if (stack.length > 0) {
+              previousPosition = stack[stack.length - 1];
+            } else {
+              previousPosition = null;
+            }
+            const [px, py] = poppedPosition;
+            currentPath[2 * px + 1][2 * py + 1] = 0;
+            if (previousPosition) {
+              const [prevX, prevY] = previousPosition;
+              const dx = px - prevX;
+              const dy = py - prevY;
+              currentPath[2 * prevX + 1 + dx][2 * prevY + 1 + dy] = 0;
+            }
           }
-  
-          // Revert the maze and path to the state before this step
-          const [px, py] = poppedPosition;
-          currentPath[2 * px + 1][2 * py + 1] = 0; // Reset path
-          if (previousPosition) {
-            const [prevX, prevY] = previousPosition;
-            const dx = px - prevX;
-            const dy = py - prevY;
-            
-            currentPath[2 * prevX + 1 + dx][2 * prevY + 1 + dy] = 0; // Reset path
-          }
-        }
           break;
         default:
           break;
       }
     }
     
+    if (stack.length > 0) {
+      const [stackX, stackY] = stack[stack.length - 1];
+      currentPath[2 * stackX + 1][2 * stackY + 1] = 3;
+      setCurrentPosition([stackX, stackY]); // Update current position
+    }
+  
     setVisualization({ maze, currentPath });
   };
-
+  
+  
+  
   const getStepHighlightClass = (stepType) => {
     if (currentStepIndex < steps.length) {
       const currentStep = steps[currentStepIndex];
@@ -148,14 +205,14 @@ function App() {
       <div className="controls">
         <div>
           <label>Size: </label>
-          <input type="range" min="5" max="50" value={mazeSize} onChange={(e) => setMazeSize(parseInt(e.target.value))} />
+          <input type="range" min="5" max="50" value={tempMazeSize} onChange={(e) => setTempMazeSize(parseInt(e.target.value))}   disabled={isGenerating}  />
           <span>
-            {mazeSize}x{mazeSize}
+            {tempMazeSize}x{tempMazeSize}
           </span>
         </div>
         <div>
           <label>Algorithm: </label>
-          <select value={algorithm} onChange={(e) => setAlgorithm(e.target.value)}>
+          <select value={algorithm} onChange={(e) => setAlgorithm(e.target.value)}   disabled={isGenerating} >
             <option value="prim">Prim</option>
             <option value="recursive">Recursive</option>
             <option value="kruskal">Kruskal</option>
@@ -166,6 +223,7 @@ function App() {
               type="checkbox" 
               checked={showSteps} 
               onChange={(e) => setShowSteps(e.target.checked)}
+              disabled={isGenerating} 
             />
             Steps
           </label>
@@ -190,6 +248,7 @@ function App() {
                         }}
                       ></div>
                     ))}
+                    
                   </div>
                 ))}
               </div>
@@ -215,19 +274,31 @@ function App() {
             <div className={`step ${getStepHighlightClass(12)}`}>Maze generation complete</div>
           </div>
         </div>
+        
       </div>
-      <div className="animation-speed-container">
-        <label>Animation Speed (ms): </label>
-        <input
-          type="range"
-          min="50"
-          max="10000"
-          value={animationSpeed}
-          onChange={(e) => setAnimationSpeed(parseInt(e.target.value))}
-        />
-        <span>{animationSpeed} ms</span>
-      </div>
+      <div className="animation-controls">
+  <button onClick={handlePlay} disabled={isPlaying || (!isPaused && steps.length === 0)}>
+    Play
+  </button>
+  <button onClick={handlePause} disabled={!isPlaying || isPaused}>
+    Pause
+  </button>
+  <button onClick={handleStepForward} disabled={currentStepIndex >= steps.length - 1 || steps.length === 0}>
+    Step Forward
+  </button>
+  <button onClick={handleStepBackward} disabled={currentStepIndex <= 0 || steps.length === 0}>
+    Step Backward
+  </button>
+</div>
+<div className="position-display">
+  {currentPosition && (
+    <div>
+      <p>Current Position: x={currentPosition[0]}, y={currentPosition[1]}</p>
     </div>
+  )}
+</div>
+
+</div>
   );
 }
 
