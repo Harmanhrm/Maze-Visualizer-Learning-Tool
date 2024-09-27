@@ -213,10 +213,10 @@ function App() {
         <div>
           <label>Algorithm: </label>
           <select value={algorithm} onChange={(e) => setAlgorithm(e.target.value)}   disabled={isGenerating} >
-            <option value="prim">Prim</option>
+            <option value="prim">Prim - In Developmnt</option>
             <option value="recursive">Recursive</option>
-            <option value="kruskal">Kruskal</option>
-            <option value="wilson">Wilson</option>
+            <option value="kruskal">Kruskal - In Developmnt</option>
+            <option value="wilson">Wilson - In Developmnt</option>
           </select>
           <label>
             <input 

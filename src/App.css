@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
 }
 
 .controls {
@@ -11,6 +12,8 @@
   justify-content: space-between;
   align-items: center;
   margin: 20px 0;
+  width: 100%;
+  max-width: 800px;
 }
 
 .controls > div,
@@ -23,16 +26,16 @@
   flex-direction: row;
   align-items: flex-start;
   margin-top: 50px;
-  width: 100%; /* Full width to accommodate both containers */
-  justify-content: space-between; /* Distribute space between items */
+  width: 100%;
+  justify-content: space-between;
 }
 
 .visualization-container {
-  width: 27vw; /* Adjust width as needed */
-  height: 27vw; /* Adjust based on preference */
+  width: 27vw;
+  height: 27vw;
   border: 1px solid black;
-  overflow: hidden; /* Prevent scrolling */
-  margin-left: 150px;
+  overflow: hidden;
+  margin-left: 20px;
 }
 
 .visualization {
@@ -47,7 +50,7 @@
 
 .grid {
   display: grid;
-  gap: 0; /* No gaps between cells */
+  gap: 0;
 }
 
 .cell {
@@ -70,30 +73,33 @@
 
 .steps-container {
   display: flex;
-  flex-direction: row; /* Arrange top row and list horizontally */
-  width: 50%; /* Adjust width as needed */
-  height: 100%; /* Align height with the maze container */
+  flex-direction: column;
+  width: 50%;
+  height: 100%;
   margin-right: 20px;
-  padding-left: 10px; /* Ensure padding aligns the container properly */
+  padding-left: 10px;
 }
 
 .steps-top-row {
   display: flex;
   flex-direction: column;
-  margin-bottom: 150px;
+  margin-bottom: 20px;
   background-color: rgb(237, 54, 22);
-  margin-right: 20px; /* Space between top row and steps list */
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .steps-list {
   display: flex;
   flex-direction: column;
   background-color: rgb(237, 115, 22);
-  width: 100%; /* Ensure it takes the remaining space */
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .step {
-  padding: 5px; /* Add padding to align text better */
+  padding: 5px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -105,34 +111,32 @@
 
 /* Indentation classes */
 .indented {
-  padding-left: 20px; /* Adjust indentation level */
+  padding-left: 20px;
 }
 
 .indented.deeper {
-  padding-left: 40px; /* Increase indentation level for deeper steps */
+  padding-left: 40px;
 }
 
 .indented.deepest {
-  padding-left: 60px; /* Increase indentation level for the deepest steps */
+  padding-left: 60px;
 }
 
 /* Alignment classes */
 .left-align {
-  text-align: left; /* Align text to the left */
+  text-align: left;
 }
 
 .right-align {
-  text-align: left; /* Align text to the right */
-  margin-left: auto; /* Push this section to the right */
+  text-align: left;
+  margin-left: auto;
 }
 
-
 .path-current {
-  background-color: green; /* Color for current path */
+  background-color: green;
 }
 
 .animation-speed-container {
   margin-top: 20px;
-  margin-right: 600px;
   text-align: center;
 }
