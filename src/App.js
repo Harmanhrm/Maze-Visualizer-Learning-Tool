@@ -74,7 +74,7 @@ function App() {
     console.log(`Generating maze with size: ${tempMazeSize} and algorithm: ${algorithm}`);
   
     try {
-      const response = await fetch(`http://Harmanhrm.pythonanywhere.com/generate_maze?size=${tempMazeSize}`);
+      const response = await fetch(`https://Harmanhrm.pythonanywhere.com/generate_maze?size=${tempMazeSize}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
