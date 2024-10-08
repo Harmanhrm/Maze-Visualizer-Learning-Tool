@@ -36,11 +36,15 @@
   border: 1px solid black;
   overflow: hidden;
   margin-left: 0px;
-  transition: margin-left 0.3s ease; /* Add transition for smooth movement */
+  transition: margin 0.3s ease; /* Add transition for smooth movement */
 }
 
-.visualization-container.shifted {
-  margin-left: -100px; /* Move to the left when sidebar is visible */
+.visualization-container.shifted-right {
+  margin-left: -250px; /* Move to the left when right sidebar is visible */
+}
+
+.visualization-container.shifted-left {
+  margin-left: 0px; /* Move to the right when left sidebar is visible */
 }
 
 .visualization {
@@ -157,4 +161,9 @@
   right: 10px;
   top: 10px;
   z-index: 1000;
+}
+
+.toggle-sidebar.left {
+  left: 10px;
+  right: auto;
 }
