@@ -3,6 +3,7 @@ import './App.css';
 import MazeGenerator from './Components/MazeGenerator';
 import MazeControlMenu from './Components/MazeControlMenu';
 import MazeContainer from './Components/MazeContainer';
+import StepsVisualizer from './Components/StepsVisualizer';
 
 function App() {
   const [mazeSize, setMazeSize] = useState(20);
@@ -17,6 +18,7 @@ function App() {
   const [isPaused, setIsPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(null);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   useEffect(() => {
     let timeoutId;
@@ -173,13 +175,24 @@ function App() {
         setVisualization={setVisualization}
         setIsGenerating={setIsGenerating}
         setIsPlaying={setIsPlaying}
+        setCurrentStepIndex={setCurrentStepIndex}
         algorithm={algorithm}
         tempMazeSize={tempMazeSize}
       />
-      <MazeContainer
-        visualization={visualization}
-        cellSize={cellSize}
-        currentPosition={currentPosition}
+      <div className={`visualization-container ${isSidebarVisible ? 'shifted' : ''}`}>
+        <MazeContainer
+          visualization={visualization}
+          cellSize={cellSize}
+          currentPosition={currentPosition}
+        />
+      </div>
+      <button className="toggle-sidebar" onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+        {isSidebarVisible ? 'Hide Steps' : 'Show Steps'}
+      </button>
+      <StepsVisualizer
+        steps={steps}
+        currentStepIndex={currentStepIndex}
+        isVisible={isSidebarVisible}
       />
     </div>
   );
