@@ -4,7 +4,7 @@ import MazeGenerator from './Components/MazeGenerator';
 import MazeControlMenu from './Components/MazeControlMenu';
 import MazeContainer from './Components/MazeContainer';
 import StepsVisualizer from './Components/StepsVisualizer';
-
+import LeftSidebar from './Components/LeftSideBar';
 function App() {
   const [mazeSize, setMazeSize] = useState(20);
   const [tempMazeSize, setTempMazeSize] = useState(20);
@@ -18,7 +18,8 @@ function App() {
   const [isPaused, setIsPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isRightSidebarVisible, setIsRightSidebarVisible] = useState(false);
+  const [isLeftSidebarVisible, setIsLeftSidebarVisible] = useState(false);
 
   useEffect(() => {
     let timeoutId;
@@ -179,20 +180,27 @@ function App() {
         algorithm={algorithm}
         tempMazeSize={tempMazeSize}
       />
-      <div className={`visualization-container ${isSidebarVisible ? 'shifted' : ''}`}>
+      <div className={`visualization-container ${isRightSidebarVisible ? 'shifted-right' : ''} ${isLeftSidebarVisible ? 'shifted-left' : ''}`}>
         <MazeContainer
           visualization={visualization}
           cellSize={cellSize}
           currentPosition={currentPosition}
         />
       </div>
-      <button className="toggle-sidebar" onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
-        {isSidebarVisible ? 'Hide Steps' : 'Show Steps'}
+      <button className="toggle-sidebar" onClick={() => setIsRightSidebarVisible(!isRightSidebarVisible)}>
+        {isRightSidebarVisible ? 'Hide Steps' : 'Show Steps'}
+      </button>
+      <button className="toggle-sidebar left" onClick={() => setIsLeftSidebarVisible(!isLeftSidebarVisible)}>
+        {isLeftSidebarVisible ? 'Hide Info' : 'Show Info'}
       </button>
       <StepsVisualizer
         steps={steps}
         currentStepIndex={currentStepIndex}
-        isVisible={isSidebarVisible}
+        isVisible={isRightSidebarVisible}
+      />
+      <LeftSidebar
+        algorithm={algorithm}
+        isVisible={isLeftSidebarVisible}
       />
     </div>
   );
