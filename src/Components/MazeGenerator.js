@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const MazeGenerator = ({ setMazeSize, setSteps, setVisualization, setIsGenerating, setIsPlaying, algorithm, tempMazeSize }) => {
+const MazeGenerator = ({ setMazeSize, setSteps, setVisualization, setIsGenerating, setIsPlaying, setCurrentStepIndex, algorithm, tempMazeSize }) => {
   const handleGenerateMaze = async () => {
+    // Clear current visualization and steps
+    setVisualization({ maze: [], currentPath: [] });
+    setSteps([]);
+    setCurrentStepIndex(0); // Reset step count
+    setIsPlaying(false);
+    setIsGenerating(false);
+
+    // Set new maze size and start generation
     setMazeSize(tempMazeSize);
     setIsPlaying(true);
 
@@ -12,6 +20,12 @@ const MazeGenerator = ({ setMazeSize, setSteps, setVisualization, setIsGeneratin
       }
 
       const { maze, steps } = await response.json();
+
+      // Check if the response contains valid maze and steps data
+      if (!maze || !steps || !Array.isArray(maze) || !Array.isArray(steps)) {
+        throw new Error('Invalid maze data received');
+      }
+
       setVisualization({
         maze,
         currentPath: Array(maze.length).fill(null).map(() => Array(maze[0].length).fill(0)),
@@ -21,6 +35,8 @@ const MazeGenerator = ({ setMazeSize, setSteps, setVisualization, setIsGeneratin
       setIsPlaying(false);
     } catch (error) {
       console.error('Error fetching maze:', error);
+      setIsGenerating(false);
+      setIsPlaying(false);
     }
   };
 
