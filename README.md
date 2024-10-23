@@ -1,70 +1,72 @@
-# Getting Started with Create React App
+# Maze Visualizer Learning Tool
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a **React.js** project that visualizes the maze generation process, designed for learning and educational purposes. It demonstrates how different maze generation algorithms (like Recursive Backtracking) work step by step, with an option to pause, play, and step through the algorithm visually. This project was developed as part of my journey as a Computer Science student.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Maze Generation Algorithms**: Visualizes the step-by-step process of maze generation using different algorithms (currently Recursive Backtracking).
+- **Interactive Controls**: Allows users to control the speed of the visualization, pause and play the generation, and manually step forward or backward through the steps.
+- **Customizable Maze Size**: Users can adjust the size of the maze dynamically before starting the generation process.
+- **Path Visualization**: Highlights the current path being explored by the maze generation algorithm.
+- **Step-by-Step Learning**: Each step in the algorithm can be visualized, helping users understand the logic behind the maze generation.
 
-### `npm start`
+## How It Works
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The app is composed of several key components:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. **MazeControlMenu**: Provides controls to start, pause, or step through the maze generation process. Users can also change the algorithm and maze size.
+2. **MazeGenerator**: Manages the maze generation logic and updates the steps to be visualized.
+3. **MazeContainer**: Displays the current state of the maze and the path being generated.
+4. **StepsVisualizer**: Shows a list of steps in the generation process, updating dynamically as the maze is being built.
+5. **LeftSidebar & RightSidebar**: Additional information and controls for the user to interact with, including algorithm descriptions and step-by-step breakdowns.
 
-### `npm test`
+## Key State Variables
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `mazeSize` and `tempMazeSize`: Controls the size of the maze grid.
+- `algorithm`: Determines which maze generation algorithm is used.
+- `visualization`: Tracks the maze and the current path being visualized.
+- `steps`: Stores the steps of the maze generation process.
+- `currentStepIndex`: Tracks the current step in the visualization.
+- `isPlaying` and `isPaused`: Control whether the maze generation is running or paused.
 
-### `npm run build`
+## Installation and Usage
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Clone the repository**:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   git clone https://github.com/your-repo/maze-visualizer.git
+   cd maze-visualizer
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **Install dependencies**:
 
-### `npm run eject`
+   ```bash
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. **Start the development server**:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```bash
+   npm start
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   The app will be accessible at `http://localhost:3000`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. **Interact with the app**: Use the control menu to adjust maze size, play the visualization, or step through the algorithm.
 
-## Learn More
+## Future Improvements
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Support for More Algorithms**: Add additional maze generation algorithms like Prim's or Kruskal's algorithm.
+- **Save and Load Feature**: Enable users to save and load different mazes.
+- **Mobile Compatibility**: Make the interface responsive and optimized for mobile users.
+  
+## Technologies Used
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **React.js** for building the user interface.
+- **CSS** for styling the application.
 
-### Code Splitting
+This project is a continuous learning tool, and I plan to improve and expand its features as I further my understanding of algorithms and data structures. Feedback and contributions are welcome!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Feel free to reach out if you have any questions or suggestions!
