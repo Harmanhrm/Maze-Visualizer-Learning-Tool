@@ -1,169 +1,340 @@
-.App {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+/* Base styles */
+.maze-app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e5e5e5;
+  font-family: 'Inter', -apple-system, sans-serif;
 }
 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header styles */
+.header {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1rem;
+}
+
+/* Tutorial modal styles */
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.tutorial-modal {
+  background: #1e1e30;
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.3s ease-out;
+}
+
+.tutorial-content {
+  margin: 2rem 0;
+}
+
+.code-block {
+  background: #2a2a40;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-family: 'Fira Code', monospace;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+.code-block .comment {
+  color: #6c7086;
+}
+
+.code-block .keyword {
+  color: #ff79c6;
+}
+
+.code-block .function {
+  color: #50fa7b;
+}
+
+.code-block .string {
+  color: #f1fa8c;
+}
+
+/* Button styles */
+.button {
+  background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+}
+
+.button.secondary {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.button.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Maze container styles */
+.maze-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Progress indicator styles */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: #4facfe;
+  transform: scale(1.2);
+}
+
+/* Controls styles */
 .controls {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-  width: 100%;
-  max-width: 800px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-.controls > div,
-.controls > button {
-  margin: 0 10px;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .tutorial-modal {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
+/* Add these to your existing App.css */
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
 }
 
-.row-container {
+.close-button:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+.tutorial-modal h2 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.button svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.button span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Fix for button alignment */
+.controls .button {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin-top: 0px;
-  width: 100%;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
 }
 
-.visualization-container {
-  width: 30vw;
-  height: 30vw;
-  border: 1px solid black;
-  overflow: hidden;
-  margin-left: 0px;
-  transition: margin 0.3s ease; /* Add transition for smooth movement */
+/* Fix for disabled button */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
-
-.visualization-container.shifted-right {
-  margin-left: -250px; /* Move to the left when right sidebar is visible */
-}
-
-.visualization-container.shifted-left {
-  margin-left: 0px; /* Move to the right when left sidebar is visible */
-}
+/* Update in your App.css */
 
 .visualization {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  background: rgba(26, 26, 46, 0.95);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.graph-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  border: 1px solid black;
-  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
 }
 
-.grid {
-  display: grid;
-  gap: 0;
+.graph-canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
 }
+/* Update these styles in your App.css */
 
-.cell {
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-}
-
-.wall {
-  border: 1px solid black;
-}
-
-.no-wall {
-  border: none;
-}
-
-.cell.path {
-  background-color: white;
-}
-
-.steps-container {
+.graph-container {
   display: flex;
   flex-direction: column;
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 450px; /* Reduced width */
-  height: 100%;
-  margin-right: 20px;
-  padding-left: 10px;
+  gap: 1rem;
+  background: rgba(26, 26, 46, 0.95);
+  border-radius: 12px;
+  padding: 1.5rem;
 }
 
-.steps-top-row {
+.visualization-controls {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 10px; /* Reduced margin */
-  background-color: rgb(237, 54, 22);
-  padding: 5px; /* Reduced padding */
-  border-radius: 5px;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.steps-list {
+.viz-toggle-button {
   display: flex;
-  flex-direction: column;
-  background-color: rgb(237, 115, 22);
-  width: 100%;
-  padding: 5px; /* Reduced padding */
-  border-radius: 5px;
-}
-
-.step {
-  padding: 3px; /* Reduced padding */
-  margin: 1px 0; /* Reduced margin */
-  box-sizing: border-box;
-}
-
-.step.highlighted {
-  background-color: #f0f8ff;
-  font-weight: bold;
-}
-
-/* Indentation classes */
-.indented {
-  padding-left: 15px; /* Reduced indentation */
-}
-
-.indented.deeper {
-  padding-left: 30px; /* Reduced indentation */
-}
-
-.indented.deepest {
-  padding-left: 45px; /* Reduced indentation */
-}
-
-/* Alignment classes */
-.left-align {
-  text-align: left;
-}
-
-.right-align {
-  text-align: left;
-  margin-left: auto;
-}
-
-.path-current {
-  background-color: green;
-}
-
-.animation-speed-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.toggle-sidebar {
-  margin: 10px;
-  padding: 10px;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
   cursor: pointer;
-  position: fixed;
-  right: 10px;
-  top: 10px;
-  z-index: 1000;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  justify-content: center;
 }
 
-.toggle-sidebar.left {
-  left: 10px;
-  right: auto;
+.viz-toggle-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.viz-toggle-button.active {
+  background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.viz-toggle-button svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.9;
+}
+
+.viz-toggle-button span {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.graph-canvas {
+  width: 450px;
+  height: 450px;
+  border-radius: 8px;
+}
+
+/* Animation for button transitions */
+@keyframes buttonPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.viz-toggle-button:active {
+  animation: buttonPop 0.2s ease;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .visualization-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .viz-toggle-button {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.5rem 1rem;
+  }
 }

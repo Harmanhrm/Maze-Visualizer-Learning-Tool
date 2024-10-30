@@ -1,0 +1,126 @@
+.code-tutorial {
+    margin-top: 2rem;
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .code-tutorial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .code-tutorial-header h2 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .section-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .nav-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .section-title {
+    color: white;
+    font-weight: 500;
+    min-width: 120px;
+    text-align: center;
+  }
+  
+  .code-content {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .code-section, .explanation-section {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .code-header, .explanation-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4facfe;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  
+  pre {
+    margin: 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  
+  code {
+    color: #e5e5e5;
+    font-family: 'Fira Code', monospace;
+    line-height: 1.5;
+  }
+  
+  .explanation-section p {
+    color: #e5e5e5;
+    line-height: 1.6;
+  }
+  
+  .section-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .dot.active {
+    background: #4facfe;
+    transform: scale(1.2);
+  }
+  
+ 
+  .keyword { color: #ff79c6; }
+  .comment { color: #6272a4; }
+  .string { color: #f1fa8c; }
+  .number { color: #bd93f9; }
+  
+  @media (max-width: 768px) {
+    .code-content {
+      grid-template-columns: 1fr;
+    }
+  }

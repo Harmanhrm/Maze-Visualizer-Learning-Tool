@@ -1,209 +1,109 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import MazeVisualizer from './MazeVisualizer';
+import { Play, Book, X, ChevronRight, ChevronLeft } from 'lucide-react';
 import './App.css';
-import MazeGenerator from './Components/MazeGenerator';
-import MazeControlMenu from './Components/MazeControlMenu';
-import MazeContainer from './Components/MazeContainer';
-import StepsVisualizer from './Components/StepsVisualizer';
-import LeftSidebar from './Components/LeftSideBar';
-function App() {
-  const [mazeSize, setMazeSize] = useState(20);
-  const [tempMazeSize, setTempMazeSize] = useState(20);
-  const [algorithm, setAlgorithm] = useState('recursive');
-  const [visualization, setVisualization] = useState({ maze: [], currentPath: [] });
-  const [steps, setSteps] = useState([]);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [showSteps, setShowSteps] = useState(false);
-  const [animationSpeed, setAnimationSpeed] = useState(100);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentPosition, setCurrentPosition] = useState(null);
-  const [isRightSidebarVisible, setIsRightSidebarVisible] = useState(false);
-  const [isLeftSidebarVisible, setIsLeftSidebarVisible] = useState(false);
 
-  useEffect(() => {
-    let timeoutId;
-    const updateStep = () => {
-      setCurrentStepIndex(prevIndex => {
-        if (prevIndex >= steps.length - 1 || prevIndex < 0) {
-          clearTimeout(timeoutId);
-          setIsGenerating(false);
-          return prevIndex;
-        }
-        if (!isPaused) {
-          timeoutId = setTimeout(updateStep, animationSpeed);
-        }
-        return prevIndex + 1;
-      });
-    };
+const App = () => {
+  const [showTutorial, setShowTutorial] = useState(true); 
+  const [currentTutorialStep, setCurrentTutorialStep] = useState(0);
 
-    if (steps.length > 0 && showSteps) {
-      if (isPlaying && !isPaused) {
-        setIsGenerating(true);
-        timeoutId = setTimeout(updateStep, animationSpeed);
-      } else if (isPaused || !isPlaying) {
-        clearTimeout(timeoutId);
-        setIsGenerating(false);
-      }
-    } else {
-      setIsGenerating(false);
-      clearTimeout(timeoutId);
+  const tutorialSteps = [
+    {
+      title: "Welcome to Maze Generator!",
+      content: "This interactive visualization shows how mazes are created using recursive backtracking. Let's learn how it works!",
+    },
+    {
+      title: "Understanding the Colors",
+      content: "🟢 Green: Current position\n🔷 Light Blue: Backtracking path\n⬛ Black: Walls\n⬜ White: Open passages",
+    },
+    {
+      title: "How It Works",
+      content: "1. Start at a cell\n2. Randomly choose a direction\n3. Break the wall if possible\n4. Repeat until no moves are left\n5. Backtrack and try new paths",
+    },
+    {
+      title: "Controls",
+      content: "▶️ Play/Pause: Start or stop the animation\n⏮️ Reset: Start over\n⏭️ Step Forward: Move one step\n🎚️ Speed: Adjust animation speed",
     }
-
-    return () => clearTimeout(timeoutId);
-  }, [steps, showSteps, animationSpeed, isPlaying, isPaused, currentStepIndex]);
-
-  useEffect(() => {
-    if (steps.length > 0 && showSteps) {
-      applyStepsToMaze();
-    }
-  }, [currentStepIndex, steps, showSteps]);
-
-  const handlePlay = () => {
-    setIsPaused(false);
-    setIsPlaying(true);
-  };
-
-  const handlePause = () => {
-    setIsPaused(true);
-    setIsPlaying(false);
-  };
-
-  const handleStepForward = () => {
-    setIsPaused(true);
-    setIsPlaying(false);
-    setCurrentStepIndex(prevIndex => Math.min(prevIndex + 1, steps.length - 1));
-  };
-
-  const handleStepBackward = () => {
-    setIsPaused(true);
-    setIsPlaying(false);
-    setCurrentStepIndex(prevIndex => Math.max(prevIndex - 1, 0));
-  };
-
-  const applyStepsToMaze = () => {
-    let maze = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(1));
-    const stack = [];
-    let currentPath = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(0));
-    let previousPosition = null;
-
-    for (let i = 0; i <= currentStepIndex; i++) {
-      const step = steps[i];
-      switch (step[0]) {
-        case 0:
-          maze = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(1));
-          currentPath = Array(mazeSize * 2 + 1).fill(null).map(() => Array(mazeSize * 2 + 1).fill(0));
-          break;
-        case 1:
-          const [startX, startY] = step[2];
-          maze[2 * startX + 1][2 * startY + 1] = 0;
-          currentPath[2 * startX + 1][2 * startY + 1] = 2;
-          previousPosition = [startX, startY];
-          break;
-        case 9:
-          const [nx, ny] = step[2];
-          maze[2 * nx + 1][2 * ny + 1] = 0;
-          currentPath[2 * nx + 1][2 * ny + 1] = 2;
-          if (previousPosition) {
-            const [px, py] = previousPosition;
-            const dx = nx - px;
-            const dy = ny - py;
-            maze[2 * px + 1 + dx][2 * py + 1 + dy] = 0;
-            currentPath[2 * px + 1 + dx][2 * py + 1 + dy] = 2;
-          }
-          previousPosition = [nx, ny];
-          break;
-        case 10:
-          stack.push(step[2]);
-          break;
-        case 11:
-          const poppedPosition = stack.pop();
-          if (poppedPosition) {
-            if (stack.length > 0) {
-              previousPosition = stack[stack.length - 1];
-            } else {
-              previousPosition = null;
-            }
-            const [px, py] = poppedPosition;
-            currentPath[2 * px + 1][2 * py + 1] = 0;
-            if (previousPosition) {
-              const [prevX, prevY] = previousPosition;
-              const dx = px - prevX;
-              const dy = py - prevY;
-              currentPath[2 * prevX + 1 + dx][2 * prevY + 1 + dy] = 0;
-            }
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
-    if (stack.length > 0) {
-      const [stackX, stackY] = stack[stack.length - 1];
-      currentPath[2 * stackX + 1][2 * stackY + 1] = 3;
-      setCurrentPosition([stackX, stackY]);
-    }
-
-    setVisualization({ maze, currentPath });
-  };
-
-  const containerSize = Math.min(window.innerWidth, window.innerHeight) * 0.27;
-  const cellSize = containerSize / mazeSize;
+  ];
 
   return (
-    <div className="App">
-      <MazeControlMenu
-        tempMazeSize={tempMazeSize}
-        setTempMazeSize={setTempMazeSize}
-        algorithm={algorithm}
-        setAlgorithm={setAlgorithm}
-        showSteps={showSteps}
-        setShowSteps={setShowSteps}
-        isGenerating={isGenerating}
-        handlePlay={handlePlay}
-        handlePause={handlePause}
-        handleStepForward={handleStepForward}
-        handleStepBackward={handleStepBackward}
-        isPlaying={isPlaying}
-        isPaused={isPaused}
-        steps={steps}
-        currentStepIndex={currentStepIndex}
-      />
-      <MazeGenerator
-        setMazeSize={setMazeSize}
-        setSteps={setSteps}
-        setVisualization={setVisualization}
-        setIsGenerating={setIsGenerating}
-        setIsPlaying={setIsPlaying}
-        setCurrentStepIndex={setCurrentStepIndex}
-        algorithm={algorithm}
-        tempMazeSize={tempMazeSize}
-      />
-      <div className={`visualization-container ${isRightSidebarVisible ? 'shifted-right' : ''} ${isLeftSidebarVisible ? 'shifted-left' : ''}`}>
-        <MazeContainer
-          visualization={visualization}
-          cellSize={cellSize}
-          currentPosition={currentPosition}
-        />
+    <div className="maze-app">
+      <div className="container">
+        <header className="header">
+          <h1 className="title">Recursive Maze Generator</h1>
+          <p>Watch the magic of recursive algorithms in action!</p>
+          <button className="button" onClick={() => setShowTutorial(true)}>
+            <Book className="w-5 h-5" />
+            <span className="ml-2">Tutorial</span>
+          </button>
+        </header>
+
+        <main className="maze-container">
+          <MazeVisualizer />
+        </main>
       </div>
-      <button className="toggle-sidebar" onClick={() => setIsRightSidebarVisible(!isRightSidebarVisible)}>
-        {isRightSidebarVisible ? 'Hide Steps' : 'Show Steps'}
-      </button>
-      <button className="toggle-sidebar left" onClick={() => setIsLeftSidebarVisible(!isLeftSidebarVisible)}>
-        {isLeftSidebarVisible ? 'Hide Info' : 'Show Info'}
-      </button>
-      <StepsVisualizer
-        steps={steps}
-        currentStepIndex={currentStepIndex}
-        isVisible={isRightSidebarVisible}
-      />
-      <LeftSidebar
-        algorithm={algorithm}
-        isVisible={isLeftSidebarVisible}
-      />
+
+      {/* Tutorial Popup */}
+      {showTutorial && (
+        <div className="tutorial-overlay">
+          <div className="tutorial-modal">
+            <button 
+              className="close-button"
+              onClick={() => setShowTutorial(false)}
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="tutorial-content">
+              <h2 className="text-2xl font-bold mb-4">
+                {tutorialSteps[currentTutorialStep].title}
+              </h2>
+              <p className="whitespace-pre-line text-gray-300">
+                {tutorialSteps[currentTutorialStep].content}
+              </p>
+            </div>
+
+            <div className="progress-dots">
+              {tutorialSteps.map((_, index) => (
+                <div 
+                  key={index} 
+                  className={`dot ${index === currentTutorialStep ? 'active' : ''}`}
+                />
+              ))}
+            </div>
+
+            <div className="controls">
+              <button
+                className="button secondary"
+                onClick={() => setCurrentTutorialStep(step => Math.max(0, step - 1))}
+                disabled={currentTutorialStep === 0}
+              >
+                <ChevronLeft className="w-5 h-5" />
+                <span className="ml-2">Previous</span>
+              </button>
+              
+              <button
+                className="button"
+                onClick={() => {
+                  if (currentTutorialStep === tutorialSteps.length - 1) {
+                    setShowTutorial(false);
+                    setCurrentTutorialStep(0);
+                  } else {
+                    setCurrentTutorialStep(step => step + 1);
+                  }
+                }}
+              >
+                <span className="mr-2">
+                  {currentTutorialStep === tutorialSteps.length - 1 ? 'Start Exploring' : 'Next'}
+                </span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;

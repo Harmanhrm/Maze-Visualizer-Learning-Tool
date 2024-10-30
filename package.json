@@ -7,6 +7,8 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
+    "d3": "^7.9.0",
+    "lucide-react": "^0.454.0",
     "maze-visualizer": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
